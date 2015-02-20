@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Minimum demo</title>
+	</head>
+
+	<body>
+		<div id="log"></div>
+
+		<script>
+
+		"use strict";
+
+		var libovr = require("node-ovrsdk");
+		var printf = require("printf");
+
+		function logmsg(msg) {
+			document.getElementById('log').innerHTML += "<br/>" + msg;
+		};
+
+		libovr.ovr_Initialize();
+		var hmd = libovr.ovrHmd_Create(0);
+		var desc = new libovr.ovrHmdDesc;
+		libovr.ovrHmd_GetDesc(hmd, desc.ref());
+		logmsg("ovrHmd_GetDesc done");
+		libovr.ovrHmd_StartSensor(hmd, ovrSensorCap_Orientation, ovrSensorCap_Orientation);
+		logmsg("ovrHmd_StartSensor done");
+
+		setInterval(function() {
+		    var ss = libovr.ovrHmd_GetSensorState(hmd, libovr.ovr_GetTimeInSeconds());
+		    var pose = ss.Predicted.Pose.Orientation;
+		    console.log(printf("%5f %5f %5f %5f", pose.x, pose.y, pose.z, pose.w));
+		}, 10);
+
+		</script>
+	</body>
+</html>
